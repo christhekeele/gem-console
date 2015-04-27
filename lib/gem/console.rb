@@ -23,31 +23,31 @@ module Gem
           ].join(' ')
         end
 
-        def throw_or_recurse(paths)
-          files, dirs = paths.partition do |path|
-            File.file? path
-          end
-          files.each do |file|
-            puts "Considering #{file}..."
-            throw :file, file if File.extname(file) == '.rb'
-          end if not files.empty?
-          dirs.each do |dir|
-            puts "recursing #{dir}..."
-            throw_or_recurse Dir[dir]
-          end if not dirs.empty?
-          raise 'No library file to load `rake console` from found.' +
-            'Set $library_load_file in your Rakefile or ' +
-            'provide a path in your `Gem::Console.enable` invocation.'
-        end
+      end
 
-        def pry_enabled?
-          begin
-            require 'pry'
-          rescue LoadError
-            false
-          end
-        end
+    private
 
+      def throw_or_recurse(paths)
+        files, dirs = paths.partition do |path|
+          File.file? path
+        end
+        files.each do |file|
+          throw :file, file if File.extname(file) == '.rb'
+        end if not files.empty?
+        dirs.each do |dir|
+          throw_or_recurse Dir[dir]
+        end if not dirs.empty?
+        raise 'No library file to load `rake console` from found.' +
+          'Set $library_load_file in your Rakefile or ' +
+          'provide a path in your `Gem::Console.enable` invocation.'
+      end
+
+      def pry_enabled?
+        begin
+          require 'pry'
+        rescue LoadError
+          false
+        end
       end
 
     end

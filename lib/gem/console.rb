@@ -23,8 +23,6 @@ module Gem
           ].join(' ')
         end
 
-      private
-
         def throw_or_recurse(paths)
           files, dirs = paths.partition do |path|
             File.file? path

@@ -4,22 +4,27 @@ require "gem/console/version"
 module Gem
   module Console
 
+    extend Rake::DSL
+
     class << self
 
-      def enable(library_load_file = $library_load_file)
+      def enable(load_dir = 'lib', load_file = nil)
 
-        library_load_file ||= catch(:file) do
-          throw_or_recurse Dir[File.join 'lib', '*']
+        load_dir, load_file = 'lib', load_dir unless load_file
+
+        load_file ||= catch(:file) do
+          throw_or_recurse Dir[File.join load_dir, '*']
         end
+        load_file.slice!(File.join load_dir, '')
 
-        desc 'Open a console preloaded with this library'
+        desc "Open a ruby console preloaded with this library"
         task :console, :cmd do |_, args|
           args.with_defaults(cmd: pry_enabled? ? 'pry' : 'irb')
           sh [
             'bundle exec',
             args.cmd,
-            "-I lib",
-            "-r #{library_load_file}"
+            "-I #{load_dir}",
+            "-r #{load_file}"
           ].join(' ')
         end
 
@@ -35,19 +40,18 @@ module Gem
           throw :file, file if File.extname(file) == '.rb'
         end if not files.empty?
         dirs.each do |dir|
-          throw_or_recurse Dir[dir]
+          throw_or_recurse Dir[File.join dir, '*']
         end if not dirs.empty?
-        raise 'No library file to load `rake console` from found.' +
-          'Set $library_load_file in your Rakefile or ' +
-          'provide a path in your `Gem::Console.enable` invocation.'
+        raise [
+          'No library file to load `rake console` from found.',
+          'Provide a path in your `Gem::Console.enable` invocation.',
+        ].join(' ')
       end
 
       def pry_enabled?
-        begin
-          require 'pry'
-        rescue LoadError
-          false
-        end
+        require 'pry' or true
+      rescue ::LoadError
+        false
       end
 
     end

@@ -1,4 +1,4 @@
-require 'rake'
+require 'rake' unless defined? Rake
 require "gem/console/version"
 
 module Gem

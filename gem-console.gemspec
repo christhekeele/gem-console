@@ -1,11 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'gem/console/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "gem-console"
-  spec.version       = Gem::Console::VERSION
+  spec.version       = '0.0.3'
   spec.authors       = ["Chris Keele"]
   spec.email         = ["dev@chriskeele.com"]
   spec.summary       = "Easily add developer console support to your gems."

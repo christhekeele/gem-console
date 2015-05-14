@@ -1,5 +1,4 @@
 require 'rake' unless defined? Rake
-require "gem/console/version"
 
 module Gem
   module Console
@@ -70,10 +69,11 @@ module Gem
 
       def run_console(precommand, command, load_dir, load_file)
         sh [
+          'CONSOLE=true',
           precommand,
           command,
           "-I #{load_dir}",
-          "-r #{load_file}"
+          "-r #{load_file}",
         ].compact.join(' ')
       end
 

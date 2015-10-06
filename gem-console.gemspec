@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.description   = spec.summary + "\n" + <<-DESC
     Supports pry and irb.
   DESC
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/christhekeele/gem-console"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
